@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.gis.admin import GISModelAdmin
-from .models import BusRealTime, Bus, BusStop, BusTimes
+from .models import BusRealTime, Bus, BusStop, BusTimes, RouteSegment
 
 
 @admin.register(BusRealTime)
@@ -21,3 +21,7 @@ class BusStopAdmin(GISModelAdmin):
 @admin.register(BusTimes)
 class BusTimesAdmin(admin.ModelAdmin):
     list_display = ("bus", "stop", "time")
+
+@admin.register(RouteSegment)
+class RouteSegmentAdmin(GISModelAdmin):#Fuck you Gopal
+    list_display = ("start_stop", "end_stop","geometry","distance_km")

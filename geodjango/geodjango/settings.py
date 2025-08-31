@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
+from dotenv import load_dotenv
 
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal311.dll'
 
@@ -17,17 +18,16 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-gzv_4wy^(@z3n(^x7hi5v8ogf!1p6y+ob=gb@-2p%i+h0-mtt0"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+DEBUG = bool(os.environ.get('DEBUG', 'False'))
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost').split(' ')
 
 # Application definition
 
@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'rest_framework',
     'rest_framework_gis',
-    'world',
     'BusTracker',
+    'Users',
 ]
 
 MIDDLEWARE = [
@@ -78,15 +78,14 @@ WSGI_APPLICATION = "geodjango.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'SERVER': 'localhost',
-        'NAME': 'geobase',
-        'USER': 'postgres',
-        'PASSWORD': 'fucku',
-        'HOST': 'localhost',
-        'PORT': '5433',
-    }
+  'default': {
+    'ENGINE': 'django.contrib.gis.db.backends.postgis',
+    'NAME': os.environ.get('DATABASE_NAME'),
+    'USER': os.environ.get('DATABASE_USERNAME'),
+    'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
+    'HOST': os.environ.get('DATABASE_HOST'),
+    'PORT': os.environ.get('DATABASE_PORT'),
+  }
 }
 
 # Password validation
@@ -94,16 +93,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -112,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Calcutta"
 
 USE_I18N = True
 
@@ -127,3 +117,9 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
