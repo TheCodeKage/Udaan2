@@ -1,3 +1,6 @@
 [submodule "frontend/UDAAN"]
 	path = frontend/UDAAN
 	url = https://github.com/vish3456/UDAAN.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/vish3456/TheUdaanApp
